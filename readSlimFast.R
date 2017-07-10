@@ -12,7 +12,7 @@ readSlimFast = function(file, interact = TRUE, censorSingle){
     file.subname = substr(file.name, start=nchar(file.name)-8, stop=nchar(file.name)-4);
     
     #Display starter text
-    cat("\nReading SLIMFAST file: ",file.name,"...\n");
+    cat("\nReading SlimFast file: ",file.name,"...\n");
     
     #Read first four columns of input SLIMFAST file
     data <- as.data.frame(subset(read.table(file), select=c(1:4)));
