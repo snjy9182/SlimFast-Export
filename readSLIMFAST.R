@@ -1,4 +1,4 @@
-readSLIMFAST = function(file, interact = T){
+readSLIMFAST = function(file, interact = TRUE, censorSingle){
     
     #Interactively open window
     if (interact == TRUE) {
@@ -47,20 +47,24 @@ readSLIMFAST = function(file, interact = T){
             }
         }
         
-        #Remove track number column from track
-        track <- track[-c(5)];
-        
-        #Rename row names of track to appropriate index values
-        rownames(track) <- 1:nrow(track);
-        
-        #Add start frame of track to frame list
-        frame.list[[length(frame.list) + 1]] <- track[[4]][[1]];
-        
-        #Add track length to length list
-        length.list[[length(length.list) + 1]] <- nrow(track);
-        
-        #Append temporary track data frame into track list
-        track.list[[i]] <- track;
+        #Check for censoring tracks that appear for only frame
+        if (!censorSingle || nrow(track) != 1){
+            
+            #Remove track number column from track
+            track <- track[-c(5)];
+            
+            #Rename row names of track to appropriate index values
+            rownames(track) <- 1:nrow(track);
+            
+            #Add start frame of track to frame list
+            frame.list[[length(frame.list) + 1]] <- track[[4]][[1]];
+            
+            #Add track length to length list
+            length.list[[length(length.list) + 1]] <- nrow(track);
+            
+            #Append temporary track data frame into track list
+            track.list[[i]] <- track;
+        }
     }
     
     #Name track list:
