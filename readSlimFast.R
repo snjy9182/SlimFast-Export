@@ -1,6 +1,62 @@
-#### readSlimFast ####
+#### readSlimFast.R
+#### Wu Lab, Johns Hopkins University
+#### Author: Sun Jay Yoo
+#### Date: July 10, 2017
 
-readSlimFast = function(file, interact = TRUE, censorSingle){
+## readSlimFast-methods
+##
+##
+###############################################################################
+##' @name readSlimFast
+##' @aliases readSlimFast
+##' @title readSlimFast
+##' @rdname readSlimFast-methods
+##' @docType methods
+##'
+##' @description take in a SlimFast .txt session file as input, along with several other user-configurable parameters and output options, to return a track list of all the trajectories
+
+##' @usage 
+##' .readSlimFast(file, interact = F,  ab.track = F, censorSingle = F, frameRecord = T)
+
+##' @param file Full path to SlimFast .txt session file
+##' @param interact Open menu to interactively choose file
+##' @param ab.track Use absolute coordinates for tracks
+##' @param censorSingle Remove and censor trajectories that appear for only one frame
+##' @param frameRecord add a fourth column to the track list after the xyz-coordinates for the frame that coordinate point was found (especially helpful when linking frames)
+
+##' @details
+##' The naming scheme for each track is as follows:
+##' 
+##' [Last five characters of the file name].[Start frame #].[Length].[Track #]
+##' 
+##' (Note: The last five characters of the file name, excluding the extension, cannot contain “.”)
+
+##' @examples
+##' #Basic function call of .readSlimFast
+##' trackl <- .readSlimFast(interact = T)
+##' 
+##' #Function call of .readSlimFast with censoring without a frame record and output to .csv files
+##' trackl2 <- .readSlimFast(interact = T, censorSingle = T, frameRecord = F)
+##' 
+##' #Option to output .csv files after processing the track lists
+##' .exportRowWise(trackl)
+##' .exportColWise(trackl)
+##' 
+##' #To find your current working directory
+##' getwd()
+##' 
+##' #Remove default fourth frame record column
+##' trackll.removed <- removeFrameRecord(trackl)
+##' 
+
+##' @export .readSlimFast
+
+###############################################################################
+
+
+#### .readSlimFast ####
+
+.readSlimFast = function(file, interact = F,  ab.track = F, censorSingle = F, frameRecord = T){
     
     #Interactively open window
     if (interact == TRUE) {
@@ -54,6 +110,16 @@ readSlimFast = function(file, interact = TRUE, censorSingle){
             
             #Remove track number column from track
             track <- track[-c(5)];
+            
+            #Option to add/remove frame record
+            if (!frameRecord){
+                track <- track[-c(4)];
+            }
+            
+            #Calcualte absolute track coordinates if desired
+            if (ab.track){
+                track <- abTrack(track);
+            }
             
             #Rename row names of track to appropriate index values
             rownames(track) <- 1:nrow(track);
